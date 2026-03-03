@@ -166,11 +166,11 @@
             <artifactId>aspectjrt</artifactId>
             <version>${aspectj.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
-            <version>${aspectj.version}</version>
-            <scope>runtime</scope>
+            <version>1.9.7</version> <!-- or 1.9.21 -->
         </dependency>
 
         <!-- Database connection pool
