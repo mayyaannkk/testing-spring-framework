@@ -9,9 +9,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.samples.petclinic.model.Vet;
 import org.springframework.samples.petclinic.model.Vets;
 import org.springframework.samples.petclinic.service.ClinicService;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,9 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 class VetControllerTest {
@@ -36,10 +40,22 @@ class VetControllerTest {
 
     List<Vet> vetsList = new ArrayList<>();
 
+    MockMvc mockMvc;
+
     @BeforeEach
     void setUp() {
         vetsList.add(new Vet());
         given(clinicService.findVets()).willReturn(vetsList);
+
+        mockMvc = MockMvcBuilders.standaloneSetup(vetController).build();
+    }
+
+    @Test
+    void testControllerShowVetList() throws Exception {
+        mockMvc.perform(get("/vets.html"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("vets/vetList"))
+                .andExpect(model().attributeExists("vets"));
     }
 
     @Test
