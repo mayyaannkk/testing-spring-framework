@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.reset;
@@ -117,5 +118,32 @@ class OwnerControllerTest {
                 .andExpect(model().attributeHasFieldErrors("owner", "city"))
                 .andExpect(model().attributeHasFieldErrors("owner", "address"))
                 .andExpect(view().name("owners/createOrUpdateOwnerForm"));
+    }
+
+    @Test
+    void processUpdateOwnerForm() throws Exception {
+        mockMvc.perform(post("/owners/{ownerId}/edit", 1)
+                    .param("firstName", "John")
+                    .param("lastName", "Thompson")
+                    .param("address", "Pune")
+                    .param("city", "Pune")
+                    .param("telephone", "1234567892"))
+                .andExpect(view().name("redirect:/owners/{ownerId}"))
+                .andExpect(status().is3xxRedirection());
+        then(clinicService).should().saveOwner(any(Owner.class));
+    }
+
+    @Test
+    void processUpdateOwnerFormError() throws Exception {
+        mockMvc.perform(post("/owners/{ownerId}/edit", 1)
+                        .param("firstName", "John")
+                        .param("lastName", "Thompson")
+                        .param("city", "Pune"))
+                .andExpect(model().attributeHasErrors("owner"))
+                .andExpect(model().attributeHasFieldErrors("owner", "telephone"))
+                .andExpect(model().attributeHasFieldErrors("owner", "address"))
+                .andExpect(view().name("owners/createOrUpdateOwnerForm"))
+                .andExpect(status().isOk());
+
     }
 }
