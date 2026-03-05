@@ -94,4 +94,15 @@ class OwnerControllerTest {
 
         assertThat(stringArgumentCaptor.getValue()).isEqualToIgnoringCase("FindMeTwice");
     }
+
+    @Test
+    void processCreationForm() throws Exception {
+        mockMvc.perform(post("/owners/new")
+                        .param("firstName", "John")
+                        .param("lastName", "Thompson")
+                        .param("address", "Pune")
+                        .param("city", "Pune")
+                        .param("telephone", "1234567892"))
+                .andExpect(status().is3xxRedirection());
+    }
 }
